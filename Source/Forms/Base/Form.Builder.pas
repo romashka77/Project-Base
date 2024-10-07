@@ -6,6 +6,8 @@ uses FMX.Controls, FMX.Types, System.Classes,
   Singleton, Builder, Form.Base, ControlMediator;
 
 type
+  TBuildButton = procedure(Owner: TFmxObject) of object;
+
   TFormBuilder = class(TInterfacedObject, IBuilder)
   private
     FControlMediator: TControlMediator;
@@ -18,12 +20,20 @@ type
     procedure BuildMainForm; virtual; abstract;
     procedure BuildModalForm; virtual; abstract;
     procedure BuildChildForm; virtual; abstract;
-    procedure BuildMainMenu(Menu: TFmxObject); virtual; abstract;
+    procedure BuildMainMenu(Menu: TControl); virtual; abstract;
+    procedure BuildFooter; virtual; abstract;
+    procedure BuildHeader; virtual; abstract;
+
   public
+    procedure SetFormName(aName: string); virtual;
+    procedure LoadFormState; virtual;
     procedure BuildTitle(t: string); virtual; abstract;
-    function BuildButtonPanel: TFMXObject; virtual; abstract;
-    procedure BuildCloseButton(Owner: TFMXObject); virtual; abstract;
-    procedure BuildOkButton(Owner: TFMXObject); virtual; abstract;
+    procedure BuildButtonPanel; virtual; abstract;
+    procedure BuildCloseButton(Owner: TFmxObject); virtual; abstract;
+    procedure BuildOkButton(Owner: TFmxObject); virtual; abstract;
+    procedure BuildYesButton(Owner: TFmxObject); virtual; abstract;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
   public
     function BuildPanel(Default: TControl; x, y, w, h: Single;
       Align: TAlignLayout): TControl; virtual; abstract;
@@ -34,9 +44,12 @@ type
     function BuildButton(Default: TControl; x, y, w, h: Single;
       Align: TAlignLayout; NotifyEvent: TNotifyEvent; Title: string): TControl;
       virtual; abstract;
+    procedure BuildButtons(Owner: TFmxObject;
+      aBuildButton: array of TBuildButton); virtual;
   public
     property CM: TControlMediator read FControlMediator;
-    property Form: TfmBase read FForm;
+    function Get: TfmBase;
+    // property Form: TfmBase read FForm;
   end;
 
   TFormBuilderSingleton = class(TSingleton)
@@ -81,9 +94,23 @@ end;
 
 { TFormBuilder }
 
+procedure TFormBuilder.BeginUpdate;
+begin
+  FForm.BeginUpdate;
+end;
+
+procedure TFormBuilder.BuildButtons(Owner: TFmxObject;
+  aBuildButton: array of TBuildButton);
+var
+  p: TBuildButton;
+begin
+  for p in aBuildButton do
+    p(Owner);
+end;
+
 procedure TFormBuilder.BuildControlMediator;
 begin
-  FControlMediator := TControlMediator.Get(Form);
+  FControlMediator := TControlMediator.Get(FForm);
 end;
 
 procedure TFormBuilder.CreateForm;
@@ -94,7 +121,27 @@ end;
 procedure TFormBuilder.CreateMainForm;
 begin
   CreateForm;
-  Application.MainForm := Form;
+  Application.MainForm := FForm;
+end;
+
+procedure TFormBuilder.EndUpdate;
+begin
+  FForm.EndUpdate;
+end;
+
+function TFormBuilder.Get: TfmBase;
+begin
+  Result := FForm;
+end;
+
+procedure TFormBuilder.LoadFormState;
+begin
+  FForm.LoadFormState;
+end;
+
+procedure TFormBuilder.SetFormName(aName: string);
+begin
+  FForm.Name := aName;
 end;
 
 end.

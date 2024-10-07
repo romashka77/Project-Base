@@ -27,14 +27,12 @@ begin
 end;
 
 procedure TFormMessageDirector.Constructing;
-var
-  p: TFMXObject;
 begin
   FBuilder.BuildModalForm;
+  FBuilder.SetFormName('MessageForm');
   FBuilder.BuildControlMediator;
   FBuilder.BuildTitle('Title');
-  p := FBuilder.BuildButtonPanel;
-  FBuilder.BuildCloseButton(p);
+  FBuilder.BuildButtonPanel;
 end;
 
 procedure TFormMessageDirector.SetSuccessor;

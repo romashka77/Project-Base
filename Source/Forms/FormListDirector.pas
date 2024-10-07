@@ -25,13 +25,12 @@ begin
 end;
 
 procedure TFormListDirector.Constructing;
-var
-  p: TFmxObject;
 begin
   FBuilder.BuildChildForm;
+  FBuilder.SetFormName('ListForm');
   FBuilder.BuildControlMediator;
-  p := FBuilder.BuildButtonPanel;
-  FBuilder.BuildCloseButton(p);
+
+  FBuilder.BuildButtonPanel;
 end;
 
 procedure TFormListDirector.SetSuccessor;

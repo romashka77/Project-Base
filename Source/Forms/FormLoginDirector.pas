@@ -30,10 +30,11 @@ var
   panel, panel0: TFmxObject;
 begin
   FBuilder.BuildModalForm;
+  FBuilder.SetFormName('LoginForm');
   FBuilder.BuildControlMediator;
 
-  panel0 := FBuilder.BuildPanel(TLayout.Create(FBuilder.Form.sbContent), 0, 0,
-    0, 26, TAlignLayout.Top);
+  panel0 := FBuilder.BuildPanel(TLayout.Create(FBuilder.Get), 0, 0, 0, 26,
+    TAlignLayout.Top);
   panel := FBuilder.BuildPanel(TLayout.Create(panel0), 0, 0, 100, 26,
     TAlignLayout.Left);
   FBuilder.BuildLabel(TLabel.Create(panel), 0, 0, 0, 22, TAlignLayout.Client,
@@ -43,8 +44,8 @@ begin
   FBuilder.BuildEdit(TEdit.Create(panel), 0, 0, 0, 22, TAlignLayout.Client,
     EmptyStr);
 
-  panel0 := FBuilder.BuildPanel(TLayout.Create(FBuilder.Form.sbContent), 0, 0,
-    0, 26, TAlignLayout.Top);
+  panel0 := FBuilder.BuildPanel(TLayout.Create(FBuilder.Get), 0, 0, 0, 26,
+    TAlignLayout.Top);
   panel := FBuilder.BuildPanel(TLayout.Create(panel0), 0, 0, 100, 26,
     TAlignLayout.Left);
   FBuilder.BuildLabel(TLabel.Create(panel), 0, 0, 0, 22, TAlignLayout.Client,
@@ -54,8 +55,8 @@ begin
   FBuilder.BuildEdit(TEdit.Create(panel), 0, 0, 0, 22, TAlignLayout.Client,
     EmptyStr);
 
-  panel0 := FBuilder.BuildPanel(TLayout.Create(FBuilder.Form.sbContent), 0, 0,
-    0, 26, TAlignLayout.Top);
+  panel0 := FBuilder.BuildPanel(TLayout.Create(FBuilder.Get), 0, 0, 0, 26,
+    TAlignLayout.Top);
   panel := FBuilder.BuildPanel(TLayout.Create(panel0), 0, 0, 100, 26,
     TAlignLayout.Left);
   FBuilder.BuildLabel(TLabel.Create(panel), 0, 0, 0, 22, TAlignLayout.Client,
@@ -65,9 +66,7 @@ begin
   FBuilder.BuildEdit(TEdit.Create(panel), 0, 0, 0, 22, TAlignLayout.Client,
     EmptyStr);
 
-  panel := FBuilder.BuildButtonPanel;
-  FBuilder.BuildOkButton(panel);
-  FBuilder.BuildCloseButton(panel);
+  FBuilder.BuildButtonPanel;
 end;
 
 procedure TFormLoginDirector.SetSuccessor;

@@ -25,13 +25,11 @@ begin
 end;
 
 procedure TFormItemDirector.Constructing;
-var
-  p: TFmxObject;
 begin
   FBuilder.BuildModalForm;
+  FBuilder.SetFormName('ItemForm');
   FBuilder.BuildControlMediator;
-  p := FBuilder.BuildButtonPanel;
-  FBuilder.BuildCloseButton(p);
+  FBuilder.BuildButtonPanel;
 end;
 
 procedure TFormItemDirector.SetSuccessor;

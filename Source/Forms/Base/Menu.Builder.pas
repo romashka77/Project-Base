@@ -3,14 +3,14 @@ unit Menu.Builder;
 interface
 
 uses FMX.Menus, System.Classes, FMX.Types,
-  Singleton, Builder;
+  Singleton, Builder, FMX.Controls;
 
 type
   TMenuBuilder = class(TInterfacedObject, IBuilder)
   private
   protected
-    FMenu: TFmxObject;
-    function Find(aItem: string): TMenuItem; virtual; abstract;
+    FMenu: TControl;
+    function Find(aItem: string): TControl; virtual; abstract;
   public
     procedure SetEnable; virtual; abstract;
     procedure BuildLine; virtual; abstract;
@@ -21,11 +21,13 @@ type
       aHandler: TNotifyEvent = nil); overload; virtual; abstract;
     procedure BuildSubItem(aParentItem: TFmxObject; aItem: string;
       aHandler: TNotifyEvent = nil); overload; virtual; abstract;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
   public
     procedure BuildMainMenu; virtual; abstract;
     procedure BuildPopupMenu; virtual; abstract;
   public
-    property Menu: TFmxObject read FMenu;
+    function Get: TControl;
   end;
 
   TMenuBuilderSingleton = class(TSingleton)
@@ -62,6 +64,23 @@ end;
 class function TMenuBuilderSingleton.Instance: TMenuBuilderSingleton;
 begin
   Result := inherited Instance as TMenuBuilderSingleton;
+end;
+
+{ TMenuBuilder }
+
+procedure TMenuBuilder.BeginUpdate;
+begin
+  FMenu.BeginUpdate;
+end;
+
+procedure TMenuBuilder.EndUpdate;
+begin
+  FMenu.EndUpdate;
+end;
+
+function TMenuBuilder.Get: TControl;
+begin
+  Result := FMenu;
 end;
 
 end.

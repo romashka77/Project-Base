@@ -2,7 +2,7 @@ unit Menu.ProductClass;
 
 interface
 type
-  TMenuProductClass = (mpcMain, mpcPopup);
+  TMenuProductClass = (mpcMainMenu, mpcPopupMenu);
 implementation
 
 end.

@@ -21,24 +21,18 @@ procedure TFormBuilderB.BuildChildForm;
 begin
   inherited;
   CreateForm;
-  Form.Position := TFormPosition.MainFormCenter;
-  Form.Show;
 end;
 
 procedure TFormBuilderB.BuildMainForm;
 begin
   inherited;
   CreateMainForm;
-  Form.Position := TFormPosition.ScreenCenter;
-  Form.Show;
 end;
 
 procedure TFormBuilderB.BuildModalForm;
 begin
   inherited;
   CreateForm;
-  Form.Position := TFormPosition.MainFormCenter;
-  Form.ShowModal;
 end;
 
 end.

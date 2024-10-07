@@ -27,7 +27,7 @@ begin
   inherited;
   Register(TFormMainSingleton.ClassName, Self);
   TFormDirectorSingleton.Instance.Director.Construct(fpcMain);
-  FForm := TFormBuilderSingleton.Instance.Builder.Form;
+  FForm := TFormBuilderSingleton.Instance.Builder.Get;
 end;
 
 destructor TFormMainSingleton.Destroy;

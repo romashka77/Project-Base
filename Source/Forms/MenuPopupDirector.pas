@@ -21,7 +21,7 @@ uses MenuMainDirector;
 function TMenuPopupDirector.CanConstruct(aMenuClass: TMenuProductClass)
   : Boolean;
 begin
-  Result := aMenuClass = mpcPopup;
+  Result := aMenuClass = mpcPopupMenu;
 end;
 
 procedure TMenuPopupDirector.Constructing;

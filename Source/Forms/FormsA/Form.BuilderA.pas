@@ -13,12 +13,15 @@ type
     procedure BuildMainForm; override;
     procedure BuildModalForm; override;
     procedure BuildChildForm; override;
-    procedure BuildMainMenu(Menu: TFmxObject); override;
+    procedure BuildMainMenu(Menu: TControl); override;
   public
     procedure BuildTitle(t: string); override;
-    function BuildButtonPanel: TFmxObject; override;
+    procedure BuildButtonPanel; override;
     procedure BuildCloseButton(Owner: TFmxObject); override;
     procedure BuildOkButton(Owner: TFmxObject); override;
+    procedure BuildYesButton(Owner: TFmxObject); override;
+    procedure BuildFooter; override;
+    procedure BuildHeader; override;
   public
     function BuildPanel(Default: TControl; x, y, w, h: Single;
       Align: TAlignLayout): TControl; override;
@@ -34,7 +37,7 @@ type
 implementation
 
 uses // FMX.Types,
-  FMX.StdCtrls, FMX.Layouts, System.UITypes, FMX.Edit,
+  FMX.StdCtrls, FMX.Layouts, System.UITypes, FMX.Edit, FMX.MultiView, FMX.Forms,
   ControlMediator, Form.Base;
 { TFormBuilderA }
 
@@ -54,19 +57,16 @@ begin
   Result := Default;
 end;
 
-function TFormBuilderA.BuildButtonPanel: TFmxObject;
+procedure TFormBuilderA.BuildButtonPanel;
 begin
-  // Result := BuildPanel(TPanel.Create(FForm.sbContent), 0, 0, 0, 26, TAlignLayout.Bottom);
-  Result := BuildPanel(TLayout.Create(FForm.sbContent), 0, 0, 0, 26,
-    TAlignLayout.Bottom);
+  BuildButtons(BuildPanel(TLayout.Create(FForm.Context), 0, 0, 0, 26,
+    TAlignLayout.Bottom), [BuildCloseButton, BuildOkButton, BuildYesButton]);
 end;
 
 procedure TFormBuilderA.BuildChildForm;
 begin
   inherited;
   CreateForm;
-
-  // Form.GetSettings;
 end;
 
 procedure TFormBuilderA.BuildCloseButton(Owner: TFmxObject);
@@ -97,6 +97,18 @@ begin
   Result := Default;
 end;
 
+procedure TFormBuilderA.BuildFooter;
+var
+  StatusBar: TStatusBar;
+begin
+  StatusBar := TStatusBar.Create(FForm);
+  StatusBar.Parent := FForm;
+end;
+
+procedure TFormBuilderA.BuildHeader;
+begin
+end;
+
 function TFormBuilderA.BuildLabel(Default: TControl; x, y, w, h: Single;
   Align: TAlignLayout; Title: string): TControl;
 begin
@@ -116,25 +128,49 @@ procedure TFormBuilderA.BuildMainForm;
 begin
   inherited;
   CreateMainForm;
-
-  // Form.GetSettings;
 end;
 
-procedure TFormBuilderA.BuildMainMenu(Menu: TFmxObject);
+procedure TFormBuilderA.BuildMainMenu(Menu: TControl);
+var
+  MultiView: TMultiView;
+  ToolBar: TToolBar;
+  MasterButton: TSpeedbutton;
+
 begin
-  inherited;
-  Menu.Parent := Form;
-  // Menu.Align := TAlignLayout.;
-  // FForm.rctContent.Parent := Menu;
+  MultiView := TMultiView.Create(FForm);
+  MultiView.BeginUpdate;
+  try
+    MultiView.Parent := FForm;
+    MultiView.TargetControl := FForm.Context;
+    MultiView.NavigationPaneOptions.CollapsedWidth := 50;
+    MultiView.Mode := TMultiViewMode.PlatformBehaviour;
+    // MultiView.Mode := TMultiViewMode.Panel;
+    MultiView.ClipChildren := True;
+    MultiView.Align := TAlignLayout.MostLeft;
+    ToolBar := TToolBar.Create(MultiView);
+//    MultiView.AddObject(ToolBar);
+    ToolBar.Parent := MultiView;
+    ToolBar.Align := TAlignLayout.Top;
+    ToolBar.Height := 44;
+    MasterButton := TSpeedbutton.Create(ToolBar);
+    MasterButton.Parent := ToolBar;
+    MasterButton.Align := TAlignLayout.Left;
+    MasterButton.Width := 50;
+    MasterButton.StyleLookup := 'detailstoolbutton';
+    MultiView.MasterButton := MasterButton;
+
+    Menu.Parent := MultiView;
+    Menu.Align := TAlignLayout.Top;
+  finally
+    MultiView.EndUpdate;
+  end;
+
 end;
 
 procedure TFormBuilderA.BuildModalForm;
 begin
   inherited;
   CreateForm;
-
-  // BuildMainMenu(TfrMainMenu.Create(Form));
-  // Form.GetSettings;
 end;
 
 procedure TFormBuilderA.BuildOkButton(Owner: TFmxObject);
@@ -159,6 +195,15 @@ procedure TFormBuilderA.BuildTitle(t: string);
 begin
   inherited;
   FForm.Caption := t;
+end;
+
+procedure TFormBuilderA.BuildYesButton(Owner: TFmxObject);
+var
+  button: TButton;
+begin
+  button := BuildButton(TButton.Create(Owner), 0, 0, 54, 22,
+    TAlignLayout.MostRight, nil, 'Да') as TButton;
+  button.ModalResult := mrYes;
 end;
 
 end.

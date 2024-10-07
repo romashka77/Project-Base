@@ -25,19 +25,26 @@ begin
 end;
 
 procedure TFormMainDirector.Constructing;
-var
-  panel: TFmxObject;
 begin
   FBuilder.BuildMainForm;
-  FBuilder.BuildControlMediator;
+  FBuilder.BeginUpdate;
+  try
+    FBuilder.BuildControlMediator;
 
-  TMenuDirectorSingleton.Instance.Director.Construct(mpcMain);
-  FBuilder.BuildMainMenu(TMenuBuilderSingleton.Instance.Builder.Menu);
+    FBuilder.SetFormName('MainForm');
+    FBuilder.BuildHeader;
 
-  panel := FBuilder.BuildButtonPanel;
-  FBuilder.BuildOkButton(panel);
-  FBuilder.BuildCloseButton(panel);
+    TMenuDirectorSingleton.Instance.Director.Construct(mpcMainMenu);
+    FBuilder.BuildMainMenu(TMenuBuilderSingleton.Instance.Builder.Get);
 
+    FBuilder.BuildButtonPanel;
+
+    FBuilder.BuildFooter;
+
+    FBuilder.LoadFormState;
+  finally
+    FBuilder.EndUpdate;
+  end;
 end;
 
 procedure TFormMainDirector.SetSuccessor;
